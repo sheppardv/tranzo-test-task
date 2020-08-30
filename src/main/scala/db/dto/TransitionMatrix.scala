@@ -18,15 +18,8 @@ object TransitionMatrix {
 
   implicit val encodeTransitionMatrix: Encoder[TransitionMatrix] =
     Encoder.forProduct3("id", "from_state", "possible_next_states")(tm =>
-      (tm.id, tm.from_state, tm.possible_next_states)
+      (tm.id, tm.from_state, tm.possible_next_states.map(_.name))
     )
   implicit val decodeTransitionMatrix: Decoder[TransitionMatrix] =
     Decoder.forProduct3("id", "from_state", "possible_next_states")(TransitionMatrix.apply)
-
-  def transition(
-      fromState: TransitionState,
-      toState: TransitionState
-  ): Either[StateTransitionError, TransitionState] = {
-    ???
-  }
 }

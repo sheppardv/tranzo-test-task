@@ -8,7 +8,7 @@ import model.TransitionHistoryCreateDTO
 
 class TransitionHistoryRepository(transactor: Transactor[IO]) {
   def getTransitionHistories: IO[List[TransitionHistory]] = {
-    sql"SELECT id, entity_id, from_state, to_state FROM transition_history"
+    sql"SELECT id, entity_id, from_state, to_state FROM transition_history ORDER BY id DESC"
       .query[TransitionHistory]
       .stream
       .compile

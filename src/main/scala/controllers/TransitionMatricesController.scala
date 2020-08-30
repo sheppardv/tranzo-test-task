@@ -1,19 +1,30 @@
 package controllers
 
 import cats.effect.IO
-import db.dto.Entity._
 import io.circe.syntax._
+import model.TransitionMatrixCreateDTO
 import org.http4s.HttpRoutes
 import org.http4s.circe._
-import org.http4s.dsl.Http4sDsl
-import repository.TransitionMatrixRepository
+import services.TransitionMatrixService
 
-class TransitionMatricesController(repository: TransitionMatrixRepository) extends Http4sDsl[IO] {
+class TransitionMatricesController(transitionMatrixService: TransitionMatrixService)
+    extends BaseController {
 
   val routes: HttpRoutes[IO] = HttpRoutes.of[IO] {
     case GET -> Root / "transition-matrices" =>
       Ok(
-        repository.getTransitionMatrices.map(_.asJson)
+        transitionMatrixService.getTransitionMatrixList.map(_.asJson)
       )
+
+    case req @ POST -> Root / "transition-matrices" =>
+      for {
+        transitionMatrixCreateDTO <- req.decodeJson[TransitionMatrixCreateDTO]
+        response <- toResponseCreated(
+          transitionMatrixService.createTransitionMatrix(transitionMatrixCreateDTO)
+        )
+      } yield response
+
+    case DELETE -> Root / "transition-matrices" / LongVar(id) =>
+      toResponseNoContent(transitionMatrixService.deleteTransitionMatrix(id))
   }
 }

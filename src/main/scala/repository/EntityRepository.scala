@@ -2,7 +2,6 @@ package repository
 
 import cats.effect.IO
 import db.dto.Entity
-import doobie._
 import doobie.implicits._
 import doobie.util.transactor.Transactor
 import model.{EntityCreateDTO, NotFoundError}
@@ -17,10 +16,10 @@ class EntityRepository(transactor: Transactor[IO]) {
       .transact(transactor)
   }
 
-  def getEntity(id: Long): IO[Either[NotFoundError.type, Entity]] = {
+  def getEntity(id: Long): IO[Either[NotFoundError, Entity]] = {
     sql"SELECT id, name FROM entity WHERE id = $id".query[Entity].option.transact(transactor).map {
       case Some(todo) => Right(todo)
-      case None       => Left(NotFoundError)
+      case None       => Left(NotFoundError())
     }
   }
 

@@ -12,7 +12,10 @@ class TransitionMatrixRepository(transactor: Transactor[IO]) {
     Meta[String].timap(TransitionState)(_.name)
 
   private implicit val transitionStateSetMeta: Meta[Set[TransitionState]] =
-    Meta[String].timap(s => s.split(",").map(TransitionState).toSet)(_.mkString(","))
+    Meta[String]
+      .timap(_.split(",").map(TransitionState).toSet)(
+        _.map(_.name).mkString(",")
+      )
 
   def getTransitionMatricesFromState(fromState: TransitionState): IO[Option[TransitionMatrix]] = {
     sql"SELECT id, from_state, possible_next_states FROM transition_matrix WHERE from_state=$fromState LIMIT 1"
@@ -46,28 +49,28 @@ class TransitionMatrixRepository(transactor: Transactor[IO]) {
       .flatMap(getTransitionMatrixByIdUnique)
   }
 
-  def deleteTransitionMatrix(id: Long): IO[Either[NotFoundError.type, Unit]] = {
+  def deleteTransitionMatrix(id: Long): IO[Either[NotFoundError, Unit]] = {
     sql"DELETE FROM transition_matrix WHERE id = $id".update.run.transact(transactor).map {
       affectedRows =>
         if (affectedRows == 1) {
           Right(())
         } else {
-          Left(NotFoundError)
+          Left(NotFoundError())
         }
     }
   }
 
   def updateTransitionMatrix(
       transitionMatrix: TransitionMatrix
-  ): IO[Either[NotFoundError.type, TransitionMatrix]] = {
+  ): IO[Either[NotFoundError, TransitionMatrix]] = {
     sql"UPDATE transition_matrix SET from_state=${transitionMatrix.from_state}, possible_next_states = ${transitionMatrix.possible_next_states} WHERE id = ${transitionMatrix.id}".update.run
       .transact(transactor)
       .map { affectedRows =>
-        if (affectedRows == 1) {
-          Right(transitionMatrix)
-        } else {
-          Left(NotFoundError)
-        }
+        Either.cond(
+          affectedRows == 1,
+          transitionMatrix,
+          NotFoundError()
+        )
       }
   }
 }

@@ -13,7 +13,7 @@ import controllers.{
   TransitionHistoryController,
   TransitionMatricesController
 }
-import services.EntityStateTransitionService
+import services.{EntityStateTransitionService, TransitionMatrixService}
 
 object HttpServer {
   def create(configFile: String = "application.conf")(implicit
@@ -51,8 +51,10 @@ object HttpServer {
         transitionHistoryRepository = transitionHistoryRepository
       )
 
+      transitionMatrixService = new TransitionMatrixService(transitionMatrixRepository)
+
       entityController             = new EntityController(entityRepository)
-      transitionMatricesController = new TransitionMatricesController(transitionMatrixRepository)
+      transitionMatricesController = new TransitionMatricesController(transitionMatrixService)
       transitionHistoryController  = new TransitionHistoryController(transitionHistoryRepository)
       entityTransitionController   = new EntityTransitionController(entityStateTransitionService)
 
