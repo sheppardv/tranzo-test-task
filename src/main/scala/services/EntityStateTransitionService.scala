@@ -39,7 +39,7 @@ class EntityStateTransitionService(
     } yield transitionHistory
   }
 
-  private def checkAndCreate(
+  private[services] def checkAndCreate(
       lastSate: TransitionHistory,
       entity: Entity,
       toState: TransitionState
@@ -64,7 +64,7 @@ class EntityStateTransitionService(
   ): EitherT[IO, InvalidTransitionError, TransitionState] = {
     for {
       transitionMatrix <- EitherT.fromOptionF(
-        transitionMatrixRepository.getTransitionMatricesFromState(fromState),
+        transitionMatrixRepository.getTransitionMatrixFromState(fromState),
         InvalidTransitionError(s"Transition from ${fromState.name} is not configured.")
       )
       newState <- EitherT.cond[IO](

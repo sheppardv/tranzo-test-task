@@ -17,7 +17,7 @@ import repository.EntityRepository
 class EntityControllerSpec extends AnyWordSpec with MockFactory with Matchers {
   private val repository = stub[EntityRepository]
 
-  private val service = new EntityController(repository).routes
+  private val entityController = new EntityController(repository).routes
 
   "EntityController" should {
     "create an Entity" in {
@@ -42,7 +42,6 @@ class EntityControllerSpec extends AnyWordSpec with MockFactory with Matchers {
       val entity2 = Entity(1, "entity2")
 
       val entities = List(entity1, entity2)
-
 
       (repository.getEntities _).when().returns(IO.pure(entities))
 
@@ -133,6 +132,6 @@ class EntityControllerSpec extends AnyWordSpec with MockFactory with Matchers {
   }
 
   private def serve(request: Request[IO]): Response[IO] = {
-    service.orNotFound(request).unsafeRunSync()
+    entityController.orNotFound(request).unsafeRunSync()
   }
 }

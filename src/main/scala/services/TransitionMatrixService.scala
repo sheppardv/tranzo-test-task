@@ -13,7 +13,7 @@ class TransitionMatrixService(
   def createTransitionMatrix(transitionMatrixCreateDTO: TransitionMatrixCreateDTO): AppResp[TransitionMatrix] = {
     EitherT
       .liftF(
-        transitionMatrixRepository.getTransitionMatricesFromState(
+        transitionMatrixRepository.getTransitionMatrixFromState(
           transitionMatrixCreateDTO.from_state
         )
       )

@@ -30,9 +30,7 @@ class TransitionHistoryRepository(transactor: Transactor[IO]) {
       .transact(transactor)
   }
 
-  def createTransition(
-      transitionHistoryCreateDTO: TransitionHistoryCreateDTO
-  ): IO[TransitionHistory] = {
+  def createTransition(transitionHistoryCreateDTO: TransitionHistoryCreateDTO): IO[TransitionHistory] = {
     val sql =
       sql"INSERT INTO transition_history (entity_id, from_state, to_state) VALUES (${transitionHistoryCreateDTO.entity_id}, ${transitionHistoryCreateDTO.from_state}, ${transitionHistoryCreateDTO.to_state})"
 

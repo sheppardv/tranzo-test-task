@@ -17,7 +17,7 @@ class TransitionMatrixRepository(transactor: Transactor[IO]) {
         _.map(_.name).mkString(",")
       )
 
-  def getTransitionMatricesFromState(fromState: TransitionState): IO[Option[TransitionMatrix]] = {
+  def getTransitionMatrixFromState(fromState: TransitionState): IO[Option[TransitionMatrix]] = {
     sql"SELECT id, from_state, possible_next_states FROM transition_matrix WHERE from_state=$fromState LIMIT 1"
       .query[TransitionMatrix]
       .option
