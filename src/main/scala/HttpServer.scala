@@ -10,6 +10,7 @@ import repository.{EntityRepository, TransitionHistoryRepository, TransitionMatr
 import controllers.{
   EntityController,
   EntityTransitionController,
+  Helpers,
   TransitionHistoryController,
   TransitionMatricesController
 }
@@ -68,7 +69,7 @@ object HttpServer {
         BlazeServerBuilder[IO]
           .bindHttp(resources.config.server.port, resources.config.server.host)
           .withHttpApp(
-            composedRoutes.orNotFound
+            composedRoutes.mapF(_.getOrElse(Helpers.jsonNotFound))
           )
           .serve
           .compile
