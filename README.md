@@ -90,3 +90,4 @@ $ docker run -p 127.0.0.1:8088:8088 <container id>
 ## Possible improvements
 - better logs
 - tracing
+- better test coverage
