@@ -27,6 +27,7 @@ class EntityStateTransitionService(
         case None =>
           val transitionDTO = TransitionHistoryCreateDTO(
             entity_id = entity.id,
+            // todo - when entity had no state, do we consider "init" as first one?
             from_state = TransitionMatrix.DEFAULT_TRANSITION_FROM_STATE,
             to_state = toState
           )
