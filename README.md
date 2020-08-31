@@ -1,36 +1,35 @@
-# todo-http4s-doobie
-A sample project of a microservice using [http4s](http://http4s.org/), [doobie](http://tpolecat.github.io/doobie/),
+# Tranzo Test Task
+A sample FSM microservice using [http4s](http://http4s.org/), [doobie](http://tpolecat.github.io/doobie/),
 and [circe](https://github.com/circe/circe).
 
-The microservice allows CRUD of todo items with a description and an importance (high, medium, low).
+For simplicity, app is using H2 in-memory databases with PostgreSQL syntax.
+There is [dummy data](src/main/resources/db/migration/V1__create_todo.sql) generated for Entities and Transition Matrices.
 
 ## End points
-The end points are:
 
-Method | Url         | Description
------- | ----------- | -----------
-GET    | /todos      | Returns all todos.
-GET    | /todos/{id} | Returns the todo for the specified id, 404 when no todo present with this id.
-POST   | /todos      | Creates a todo, give as body JSON with the description and importance, returns a 201 with the created todo.
-PUT    | /todos/{id} | Updates an existing todo, give as body JSON with the description and importance, returns a 200 with the updated todo when a todo is present with the specified id, 404 otherwise.
-DELETE | /todos/{id} | Deletes the todo with the specified todo, 404 when no todo present with this id.
+Method | Url                     | Description
+------ | -----------             | -----------
+GET    | /entities               | Returns all Entities.
+POST   | /entities               | Creates Entity
+POST   | /states/:entity_id      | Creates Transition from last entity state to the new one
+GET    | /transitions            | Returns Transition History for Entities
+GET    | /transition-matrices    | Returns Transition Matrices 
+POST   | /transition-matrices    | Creates Transition Matrix  
 
-Here are some examples on how to use the microservice with curl, assuming it runs on the default port 8080:
+Create a Entity:
+```curl -X POST --header "Content-Type: application/json" --data '{"name": "Entity 1"}' http://localhost:8088/entities```
 
-Create a todo:
-```curl -X POST --header "Content-Type: application/json" --data '{"description": "my todo", "importance": "high"}' http://localhost:8080/todos```
+Get all entities:
+```curl http://localhost:8088/entities```
 
-Get all todos:
-```curl http://localhost:8080/todos```
+Make transition for entity to new state:
+```curl -X POST --header "Content-Type: application/json" --data '{"sate": "pending"}' http://localhost:8088/states/1```
 
-Get a single todo (assuming the id of the todo is 1):
-```curl http://localhost:8080/todos/1```
+Get all Transition Matrices:
+```curl http://localhost:8088/transition-matrices```
 
-Update a todo (assuming the id of the todo is 1):
-```curl -X PUT --header "Content-Type: application/json" --data '{"description": "my todo", "importance": "low"}' http://localhost:8080/todos/1```
-
-Delete a todo (assuming the id of the todo is 1):
-```curl -X DELETE http://localhost:8080/todos/1```
+Create Transition Matrix:
+```curl -X POST --header "Content-Type: application/json" --data '{"from_state": "pending", "possible_next_states": ["closed", "finished"]}' http://localhost:8088/transition-matrices```
 
 ## http4s
 [http4s](http://http4s.org/) is used as the HTTP layer. http4s provides streaming and functional HTTP for Scala.
@@ -66,9 +65,21 @@ microservice is lost.
 Using [Flyway](https://flywaydb.org/) the database migrations are performed when starting the server.
 
 ## Tests
-This example project contains both unit tests, which mock the repository that accesses the database, and
-integration tests that use the [http4s](http://http4s.org/) HTTP client to perform actual requests.
+Project is partially covered with unit test.
 
 ## Running
-You can run the microservice with `sbt run`. By default it listens to port number 8080, you can change
-this in the `application.conf`.
+You can run the microservice with `sbt run`. By default it listens to port number 8088, you can change
+this in the [application.conf](src/main/resources/application.conf).
+
+## Packaging
+`sbt assembly`
+
+## Docker
+```
+$ docker build .
+$ docker run -p 127.0.0.1:8088:8088 <container id>
+```
+
+## Possible improvements
+- better logs
+- tracing

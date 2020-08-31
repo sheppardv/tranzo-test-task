@@ -1,6 +1,7 @@
 package repository
 
 import cats.effect.IO
+import cats.syntax.either._
 import db.dto.Entity
 import doobie.implicits._
 import doobie.util.transactor.Transactor
@@ -17,9 +18,11 @@ class EntityRepository(transactor: Transactor[IO]) {
   }
 
   def getEntity(id: Long): IO[Either[NotFoundError, Entity]] = {
-    sql"SELECT id, name FROM entity WHERE id = $id".query[Entity].option.transact(transactor).map {
-      case Some(todo) => Right(todo)
-      case None       => Left(NotFoundError())
+    sql"SELECT id, name FROM entity WHERE id = $id".query[Entity].option.transact(transactor).map { mbEntity =>
+      Either.fromOption(
+        mbEntity,
+        NotFoundError()
+      )
     }
   }
 

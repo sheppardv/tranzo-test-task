@@ -1,5 +1,5 @@
 lazy val commonSettings = Seq(
-  name := "todo http4s doobie",
+  name := "tranzo-test-task",
   version := "1.0-SNAPSHOT",
   scalaVersion := "2.13.1",
   scalacOptions ++= Seq(
@@ -53,3 +53,8 @@ lazy val root = (project in file("."))
       "org.scalamock"         %% "scalamock"              % ScalaMockVersion % "test"
     )
   )
+
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", _ @_*) => MergeStrategy.discard
+  case _                           => MergeStrategy.first
+}
