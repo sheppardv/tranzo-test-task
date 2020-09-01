@@ -5,6 +5,8 @@ and [circe](https://github.com/circe/circe).
 For simplicity, app is using H2 in-memory databases with PostgreSQL syntax.
 There is [dummy data](src/main/resources/db/migration/V1__create_todo.sql) generated for Entities and Transition Matrices.
 
+Transition Matrix is cached using scalacache + caffeine. 
+
 PLEASE NOTE
 - did not have time to implement better unit / it test coverage
 - my git broke because of OSX updates, did not follow git flow
