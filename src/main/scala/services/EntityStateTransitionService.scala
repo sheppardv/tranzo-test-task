@@ -4,12 +4,12 @@ import cats.data.EitherT
 import cats.effect.IO
 import db.dto.{Entity, TransitionHistory, TransitionMatrix, TransitionState}
 import model.{AppError, InvalidTransitionError, TransitionHistoryCreateDTO}
-import repository.{EntityRepository, TransitionHistoryRepository, TransitionMatrixRepository}
+import repository.{EntityRepository, TransitionHistoryRepository}
 
 class EntityStateTransitionService(
     entityRepository: EntityRepository,
     transitionHistoryRepository: TransitionHistoryRepository,
-    transitionMatrixRepository: TransitionMatrixRepository
+    transitionMatrixService: TransitionMatrixService
 ) {
   type AppResp[A] = EitherT[IO, AppError, A]
 
@@ -64,7 +64,7 @@ class EntityStateTransitionService(
   ): EitherT[IO, InvalidTransitionError, TransitionState] = {
     for {
       transitionMatrix <- EitherT.fromOptionF(
-        transitionMatrixRepository.getTransitionMatrixFromState(fromState),
+        transitionMatrixService.getTransitionMatrixFromState(fromState),
         InvalidTransitionError(s"Transition from ${fromState.name} is not configured.")
       )
       newState <- EitherT.cond[IO](

@@ -46,13 +46,13 @@ object HttpServer {
       transitionMatrixRepository  = new TransitionMatrixRepository(resources.transactor)
       transitionHistoryRepository = new TransitionHistoryRepository(resources.transactor)
 
+      transitionMatrixService = new TransitionMatrixService(transitionMatrixRepository)
+
       entityStateTransitionService = new EntityStateTransitionService(
         entityRepository = entityRepository,
-        transitionMatrixRepository = transitionMatrixRepository,
+        transitionMatrixService = transitionMatrixService,
         transitionHistoryRepository = transitionHistoryRepository
       )
-
-      transitionMatrixService = new TransitionMatrixService(transitionMatrixRepository)
 
       entityController             = new EntityController(entityRepository)
       transitionMatricesController = new TransitionMatricesController(transitionMatrixService)

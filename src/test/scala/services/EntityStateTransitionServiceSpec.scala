@@ -6,17 +6,17 @@ import model.{NotFoundError, TransitionHistoryCreateDTO}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import repository.{EntityRepository, TransitionHistoryRepository, TransitionMatrixRepository}
+import repository.{EntityRepository, TransitionHistoryRepository}
 
 class EntityStateTransitionServiceSpec extends AnyWordSpec with MockFactory with Matchers {
   private val entityRepository            = stub[EntityRepository]
   private val transitionHistoryRepository = stub[TransitionHistoryRepository]
-  private val transitionMatrixRepository  = stub[TransitionMatrixRepository]
+  private val transitionMatrixService     = stub[TransitionMatrixService]
 
   private val entityStateTransitionService = new EntityStateTransitionService(
     entityRepository,
     transitionHistoryRepository,
-    transitionMatrixRepository
+    transitionMatrixService
   )
 
   "EntityStateTransitionService" should {
@@ -68,7 +68,7 @@ class EntityStateTransitionServiceSpec extends AnyWordSpec with MockFactory with
           possible_next_states = Set(toState)
         )
 
-        (transitionMatrixRepository.getTransitionMatrixFromState _)
+        (transitionMatrixService.getTransitionMatrixFromState _)
           .when(oldTh.to_state)
           .returns(IO.pure(Some(tm)))
 
@@ -124,7 +124,7 @@ class EntityStateTransitionServiceSpec extends AnyWordSpec with MockFactory with
           possible_next_states = Set(TransitionState("dummy-t"))
         )
 
-        (transitionMatrixRepository.getTransitionMatrixFromState _)
+        (transitionMatrixService.getTransitionMatrixFromState _)
           .when(oldTh.to_state)
           .returns(IO.pure(Some(tm)))
 
@@ -215,7 +215,7 @@ class EntityStateTransitionServiceSpec extends AnyWordSpec with MockFactory with
           Set(toState)
         )
 
-        (transitionMatrixRepository.getTransitionMatrixFromState _)
+        (transitionMatrixService.getTransitionMatrixFromState _)
           .when(fromState)
           .returns(IO.pure(Some(tm)))
 
@@ -258,7 +258,7 @@ class EntityStateTransitionServiceSpec extends AnyWordSpec with MockFactory with
           name = "entity-1"
         )
 
-        (transitionMatrixRepository.getTransitionMatrixFromState _)
+        (transitionMatrixService.getTransitionMatrixFromState _)
           .when(fromState)
           .returns(IO.pure(None))
 
@@ -277,7 +277,7 @@ class EntityStateTransitionServiceSpec extends AnyWordSpec with MockFactory with
           Set(toState)
         )
 
-        (transitionMatrixRepository.getTransitionMatrixFromState _)
+        (transitionMatrixService.getTransitionMatrixFromState _)
           .when(fromState)
           .returns(IO.pure(Some(tm)))
 
@@ -300,7 +300,7 @@ class EntityStateTransitionServiceSpec extends AnyWordSpec with MockFactory with
           Set(toState)
         )
 
-        (transitionMatrixRepository.getTransitionMatrixFromState _)
+        (transitionMatrixService.getTransitionMatrixFromState _)
           .when(fromState)
           .returns(IO.pure(Some(tm)))
 
@@ -315,7 +315,7 @@ class EntityStateTransitionServiceSpec extends AnyWordSpec with MockFactory with
 
         val toStateFailed = TransitionState("to-state-fail")
 
-        (transitionMatrixRepository.getTransitionMatrixFromState _)
+        (transitionMatrixService.getTransitionMatrixFromState _)
           .when(fromState)
           .returns(IO.pure(None))
 

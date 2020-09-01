@@ -28,6 +28,8 @@ lazy val ScalaTestVersion = "3.1.1"
 
 lazy val ScalaMockVersion = "4.4.0"
 
+lazy val ScalaCacheVersion = "0.28.0"
+
 lazy val root = (project in file("."))
   .configs(IntegrationTest)
   .settings(
@@ -49,6 +51,9 @@ lazy val root = (project in file("."))
       "com.github.pureconfig" %% "pureconfig"             % PureConfigVersion,
       "com.github.pureconfig" %% "pureconfig-cats-effect" % PureConfigVersion,
       "ch.qos.logback"         % "logback-classic"        % LogbackVersion,
+      "com.github.cb372"      %% "scalacache-core"        % ScalaCacheVersion,
+      "com.github.cb372"      %% "scalacache-caffeine"    % ScalaCacheVersion,
+      "com.github.cb372"      %% "scalacache-cats-effect" % ScalaCacheVersion,
       "org.scalatest"         %% "scalatest"              % ScalaTestVersion % "it,test",
       "org.scalamock"         %% "scalamock"              % ScalaMockVersion % "test"
     )

@@ -40,6 +40,13 @@ class TransitionMatrixRepository(transactor: Transactor[IO]) {
       .transact(transactor)
   }
 
+  def getTransitionMatrix(id: Long): IO[Option[TransitionMatrix]] = {
+    sql"SELECT id, from_state, possible_next_states FROM transition_matrix WHERE id=$id LIMIT 1"
+      .query[TransitionMatrix]
+      .option
+      .transact(transactor)
+  }
+
   def createTransitionMatrix(
       transitionMatrixCreateDTO: TransitionMatrixCreateDTO
   ): IO[TransitionMatrix] = {

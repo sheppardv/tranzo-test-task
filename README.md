@@ -8,9 +8,6 @@ There is [dummy data](src/main/resources/db/migration/V1__create_todo.sql) gener
 PLEASE NOTE
 - did not have time to implement better unit / it test coverage
 - my git broke because of OSX updates, did not follow git flow
-- also did not have time to implement caching, but I would go with memcache/redis, 
-I would cache db request - response, take "from" as a key and "list of possible transitions" as value so we can quickly
-lookup what next states are allowed. And evict cache for given "from" state once Matrix is updated / deleted.
 
 ## End points
 
