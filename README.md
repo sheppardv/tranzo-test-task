@@ -71,7 +71,7 @@ microservice is lost.
 Using [Flyway](https://flywaydb.org/) the database migrations are performed when starting the server.
 
 ## Tests
-Project is partially covered with unit test.
+Project is partially covered with unit and integration tests.
 
 ## Running
 You can run the microservice with `sbt run`. By default it listens to port number 8088, you can change
